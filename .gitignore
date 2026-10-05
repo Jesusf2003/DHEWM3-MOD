@@ -27,3 +27,4 @@
 /.vs*
 
 /neo/CMakeSettings.json
+/neo/CMakeUserPresets.json

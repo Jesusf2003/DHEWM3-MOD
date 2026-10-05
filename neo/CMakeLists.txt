@@ -515,7 +515,9 @@ if(D3_COMPILER_IS_GCC_OR_CLANG)
     set(sys_libs ${sys_libs} "-framework Carbon -framework Cocoa -framework IOKit")
   elseif(WIN32)
     # use 8MB stack instead of 1MB, so big models don't overflow it with _alloca()
-    set(ldflags "${ldflags} -static-libgcc -static-libstdc++ -Wl,--stack,8388608")
+    # -static: also link the MinGW runtime (libwinpthread) statically, so only the DLLs
+    # from DHEWM3LIBS (OpenAL32, SDL2, libcurl) are needed next to the executable
+    set(ldflags "${ldflags} -static -static-libgcc -static-libstdc++ -Wl,--stack,8388608")
   elseif(os STREQUAL "linux")
     set(sys_libs ${sys_libs} dl)
   elseif(os STREQUAL "freebsd")
@@ -1366,6 +1368,17 @@ if(CORE)
     ${SDLx_LIBRARY}
     ${sys_libs}
   )
+
+  if(WIN32 AND DHEWM3LIBS AND EXISTS "${DHEWM3LIBS}/bin/OpenAL32.dll")
+    # Windows looks for DLLs in System32 before PATH, so a Creative OpenAL32.dll installed there
+    # would be used instead of OpenAL Soft. The exe's dir is searched first: put it there
+    add_custom_command(TARGET ${DHEWM3BINARY} POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${DHEWM3LIBS}/bin/OpenAL32.dll"
+        "$<TARGET_FILE_DIR:${DHEWM3BINARY}>/OpenAL32.dll"
+      COMMENT "Copying OpenAL Soft (OpenAL32.dll) from DHEWM3LIBS"
+    )
+  endif()
 
   if(NOT APPLE AND NOT WIN32)
     install(TARGETS ${DHEWM3BINARY}
