@@ -73,6 +73,7 @@ option(ONATIVE "Optimize for the host CPU" OFF)
 option(SDL2 "Use SDL2 instead of SDL1.2" ON)
 option(SDL3 "Use SDL3 instead of SDL2 or SDL1.2" OFF)
 option(IMGUI "Build with Dear ImGui integration - requires SDL2/SDL3 and C++11" ON)
+option(RADIANT_IMGUI "Build dhewm3-radiant, the Dear ImGui (v1.92.9b-docking, via vcpkg) based level editor - requires SDL2/SDL3" OFF)
 option(REPRODUCIBLE_BUILD "Replace __DATE__ and __TIME__ by hardcoded values for reproducible builds" OFF)
 
 option(TRACY "Build and integrate the Tracy profiler, requires HARDLINK_GAME" OFF)
@@ -1366,17 +1367,6 @@ if(CORE)
     ${sys_libs}
   )
 
-  if(TOOLS AND MFC_FOUND AND MSVC)
-    # the level editor launcher is the same binary under another name:
-    # WinMain() checks the exe name and calls RadiantMain() (see tools/radiant/Radiant.cpp)
-    add_custom_command(TARGET ${DHEWM3BINARY} POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-      "$<TARGET_FILE:${DHEWM3BINARY}>"
-      "$<TARGET_FILE_DIR:${DHEWM3BINARY}>/${DHEWM3BINARY}-radiant.exe"
-      COMMENT "Creating ${DHEWM3BINARY}-radiant.exe (level editor launcher)"
-    )
-  endif()
-
   if(NOT APPLE AND NOT WIN32)
     install(TARGETS ${DHEWM3BINARY}
       RUNTIME DESTINATION "${bindir}"
@@ -1478,4 +1468,11 @@ if(D3XP AND NOT HARDLINK_GAME)
       ARCHIVE DESTINATION "${libdir}"
     )
   endif()
+endif()
+
+if(RADIANT_IMGUI)
+  if(NOT SDL2 AND NOT SDL3)
+    message(FATAL_ERROR "RADIANT_IMGUI requires SDL2 or SDL3")
+  endif()
+  add_subdirectory(tools/radiant/imgui)
 endif()

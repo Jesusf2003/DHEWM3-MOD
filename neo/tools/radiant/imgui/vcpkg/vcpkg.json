@@ -1,0 +1,25 @@
+{
+  "name": "dhewm3-radiant-imgui",
+  "version-string": "0.1.0",
+  "description": "Dependencies of the ImGui based Radiant (dhewm3-radiant). Installed by neo/CMakeLists.txt when RADIANT_IMGUI is ON",
+  "dependencies": [
+    {
+      "name": "imgui",
+      "features": [ "docking-experimental", "opengl2-binding" ]
+    }
+  ],
+  "features": {
+    "sdl2": {
+      "description": "SDL2 platform backend (same as the engine with SDL2=ON)",
+      "dependencies": [
+        { "name": "imgui", "features": [ "sdl2-binding" ] }
+      ]
+    },
+    "sdl3": {
+      "description": "SDL3 platform backend (same as the engine with SDL3=ON)",
+      "dependencies": [
+        { "name": "imgui", "features": [ "sdl3-binding" ] }
+      ]
+    }
+  }
+}

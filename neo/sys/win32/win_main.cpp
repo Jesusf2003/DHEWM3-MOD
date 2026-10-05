@@ -1576,15 +1576,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR szCmdLine, int sw)
 	SDL_SetMainReady();
 
 	// Run the application main() code
-#ifdef ID_ALLOW_TOOLS
-	// dhewm3-radiant.exe is a copy of this binary that boots straight into the level editor
-	if (RadiantIsEditorExecutable(argv[0])) {
-		result = RadiantMain(argc, argv, SDL_main);
-	} else
-#endif
-	{
-		result = SDL_main(argc, argv);
-	}
+	result = SDL_main(argc, argv);
 
 	// Free argv, to avoid memory leak
 	for (i = 0; i < argc; ++i) {

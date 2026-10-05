@@ -52,11 +52,6 @@ void	RadiantRun( void );
 void	RadiantPrint( const char *text );
 void	RadiantSync( const char *mapName, const idVec3 &viewOrg, const idAngles &viewAngles );
 
-// standalone editor entry point (dhewm3-radiant.exe)
-typedef int ( *radiantEngineMain_t )( int argc, char **argv );
-bool	RadiantIsEditorExecutable( const char *exePath );
-int		RadiantMain( int argc, char **argv, radiantEngineMain_t engineMain );
-
 
 // in-game Light Editor
 void	LightEditorInit( const idDict *spawnArgs );
